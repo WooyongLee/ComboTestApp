@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:rowCount="2"
+        android:columnCount="2">
+
+        <fragment
+            android:id="@+id/chartFragment"
+            android:name="com.example.combobackup.fragment.ChartFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="30"
+            tools:layout="@layout/chart_fragment">
+        </fragment>
+
+        <fragment
+            android:id="@+id/rightFragment"
+            android:name="com.example.combobackup.fragment.RightMenuFragment"
+            android:layout_width="0dp"
+            android:layout_height="@+id/chartFragment"
+            android:layout_columnWeight="10">
+
+        </fragment>
+
+        <fragment
+            android:id="@+id/bottomFragment"
+            android:name="com.example.combobackup.fragment.BottomMenuFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2">
+
+        </fragment>
+    </GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

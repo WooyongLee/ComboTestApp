@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/mainLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.AppCompat.DayNight"
+        android:orientation="horizontal"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="00:00:00"
+            android:id="@+id/clock"></TextView>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/saButton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="3dp"
+        android:text="sa chart"
+        android:textColor="@color/black">
+    </Button>
+
+    <Button
+        android:id="@+id/mapButton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="3dp"
+        android:text="map"
+        android:textColor="@color/black">
+    </Button>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/updateDbButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="3dp"
+            android:text="update db"
+            android:textColor="@color/black">
+        </Button>
+
+        <Button
+            android:id="@+id/checkDbButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="3dp"
+            android:text="check db"
+            android:textColor="@color/black">
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/connectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:text="blootooth"
+            android:textColor="@color/black"></Button>
+
+        <Button
+            android:id="@+id/mqttServiceButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="3dp"
+            android:text="mqtt"
+            android:textColor="@color/black">
+        </Button>
+    </LinearLayout>
+
+    <!-- Layout of Invisible Buttons -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/permissionOpenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="Show Permission">
+        </Button>
+
+        <Button
+            android:id="@+id/forceExitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="Force Exit">
+        </Button>
+
+        <Button
+            android:id="@+id/exitComboButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="Combo Exit (Not Used)">
+        </Button>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="==== Setting Values ====">
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/frequencyText"
+            android:maxLength="15"
+            android:maxLines="1"
+            android:inputType="numberSigned"
+            android:digits="0123456789."
+            android:width="80dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </EditText>
+
+        <Button
+            android:id="@+id/attenButton"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content">
+        </Button>
+
+        <Button
+            android:id="@+id/modeButton"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content">
+        </Button>
+    </LinearLayout>
+</LinearLayout>

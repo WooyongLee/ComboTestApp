@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/table_frag"
+    android:name="com"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10">
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="4.55"
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvDetectedTableTitle"
+            android:text="detected_spur_table"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content">
+        </TextView>
+
+        <Button
+            android:id="@+id/createObjectButton"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="create">
+
+        </Button>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4.8"
+        android:weightSum="10"
+        android:orientation="horizontal"
+        android:background="@drawable/table_border"
+        app:layout_constraintBottom_toTopOf="@+id/tvDetectedTableTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollViewer">
+
+        <View
+            android:id="@+id/splitLineLeft"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:background="#eeeeee"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Index"
+            android:textColor="#eeeeee" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Time"
+            android:textColor="#eeeeee" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Power"
+            android:textColor="#eeeeee" />
+
+        <View
+            android:id="@+id/splitLine"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:background="#eeeeee"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Index"
+            android:textColor="#eeeeee" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Time"
+            android:textColor="#eeeeee" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Power"
+            android:textColor="#eeeeee" />
+
+
+        <View
+            android:id="@+id/splitLineRight"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:background="#eeeeee"/>
+
+    </LinearLayout>
+
+<!--    <ScrollView-->
+<!--        android:id="@+id/scrollViewer"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_weight="0.2"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/main_layout"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
+
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="0.7"
+            app:layout_constraintBottom_toTopOf="@+id/main_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </LinearLayout>
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/recyclerview"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:divider="@null"-->
+<!--            tools:ignore="MissingConstraints"/>-->
+<!--    </ScrollView>-->
+</LinearLayout>
