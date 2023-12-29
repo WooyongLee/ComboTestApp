@@ -8,22 +8,29 @@ import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import com.example.combobackup.MqttActivity
+import com.example.combobackup.connection.ConnectionStatus
 import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.MqttClientState
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.function.BiConsumer
 
 import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import kotlin.concurrent.timer
 
 class MqttService : Service() {
+
+    private val TAG = "MqttService"
 
     // Declare Static Instance of this
     companion object {
         private var instanceMqtt: MqttService? = null;
-        public fun getInstanceMqtt(): MqttService? {
+
+        fun getInstanceMqtt(): MqttService? {
+
             if ( instanceMqtt == null)
             {
                 instanceMqtt = MqttService()
@@ -34,7 +41,8 @@ class MqttService : Service() {
 
     private var mMqttClient: Mqtt3AsyncClient? = null
 
-    private var isConnected: Boolean = false
+    var isConnected: Boolean = false
+        private set
 
     private var mMqttConnectionTimeoutHandler: Handler? = null
     private var mDatetimeoutHandler: Handler? = null
@@ -46,19 +54,69 @@ class MqttService : Service() {
     // ms
     private var mMqttTimeout : Long = 100000
 
+    private var isRequestMqttConnection = false
+
+    private var latestMQttStatus : MqttClientState = MqttClientState.DISCONNECTED
+
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
     }
 
+    // MQTT Ping 송신
+    fun startMqttPingTimer()
+    {
+        var second = 0
+        timer(period = 6000, initialDelay = 1000)
+        {
+
+            if (mMqttClient != null)
+            {
+                // 이전 상태와 비교하여 변경점이 있는 경우에
+                if (latestMQttStatus != mMqttClient?.state!!)
+                {
+                    MqttActivity.appendLog(TAG, "MqttClientState is " + mMqttClient?.state)
+
+                    when (mMqttClient?.state) {
+                        MqttClientState.CONNECTING -> MqttActivity.setMqttStatus(ConnectionStatus.Progress)
+                        MqttClientState.CONNECTED -> MqttActivity.setMqttStatus(ConnectionStatus.Connected)
+                        MqttClientState.DISCONNECTED -> MqttActivity.setMqttStatus(ConnectionStatus.Failed)
+
+                        // Standby state
+                        MqttClientState.CONNECTING_RECONNECT -> MqttActivity.setMqttStatus(
+                            ConnectionStatus.Standby
+                        )
+
+                        MqttClientState.DISCONNECTED_RECONNECT -> MqttActivity.setMqttStatus(
+                            ConnectionStatus.Standby
+                        )
+                    }
+                }
+                latestMQttStatus = mMqttClient?.state!!
+            }
+
+
+            // 더 이상 MQTT 요청을 하지 않는 경우에 Cancel
+            if (!isRequestMqttConnection)
+            {
+                cancel()
+            }
+        }
+    }
+
     fun initMqtt(url: String)
     {
+        // MQTT Ping Timer 생성
+        startMqttPingTimer()
+
+        isRequestMqttConnection = true
+
         var uuid = UUID.randomUUID().toString()
-        var tmpUrl = "192.168.10.1"
-        Log.d("Mqtt Initialize", "ip :: " + url + " UUID : " + uuid);
+
+        MqttActivity.appendLog(TAG, "Mqtt Initialize, ip :: $url \n UUID : $uuid");
         mMqttClient = MqttClient.builder()
             .useMqttVersion3()
             .identifier(uuid)
-            .serverHost(tmpUrl)
+            .serverHost(url)
             .serverPort(1883)
             .buildAsync();
 
@@ -67,34 +125,29 @@ class MqttService : Service() {
 
     fun connectClient()
     {
-        Log.d("connectClient()", "Try To Connect Client")
+        MqttActivity.appendLog(TAG, "connectClient(), Try To Connect Client")
+
         mMqttClient?.connect()?.whenComplete { connAck, throwable ->
+
             if (throwable != null) {
                 // Handle Failure
-                Log.e("Connect Client", "connect fail");
+                MqttActivity.appendLog(TAG, "connectClient(), connect fail");
                 isConnected = false
 
-                // Try to reconnect
-                if (mMqttClient != null) {
-                    startCheckMqttConnectionHandler()
-                }
             }
 
             // 연결 성공시에 대한 처리
             else
             {
+                MqttActivity.appendLog(TAG, "connectClient(), Connect Success")
+                MqttActivity.appendLog(TAG, "connection ack return code = " + connAck.returnCode.code)
+
                 isConnected= true
-                connectCompleted()
+                subscribe()
             }
+
+            // latestMQttStatus = mMqttClient?.state!!
         }
-    }
-
-    private fun connectCompleted()
-    {
-        subscribe()
-
-        sendCommand("0x11");
-
     }
 
     // Client, Broker Server에 구독
@@ -106,11 +159,14 @@ class MqttService : Service() {
         }?.send()?.whenComplete { subAck, throwable ->
             if (throwable != null)
             {
-                Log.d("subscribe()", "Handle failure to subscribe")
+                MqttActivity.appendLog(TAG, "subscribe(), Handle failure to subscribe")
             }
             else
             {
-                Log.d("subscribe()", "Handle succesful to subscribe")
+                MqttActivity.appendLog(TAG, "subscribe(), Handle successful to subscribe")
+
+                // Test Send Command
+                sendCommand("0x11");
             }
         }
 
@@ -119,11 +175,11 @@ class MqttService : Service() {
         }?.send()?.whenComplete { subAck, throwable ->
             if (throwable != null)
             {
-                Log.d("subscribe()", "Handle failure to subscribe")
+                MqttActivity.appendLog(TAG, "subscribe(), Handle failure to subscribe")
             }
             else
             {
-                Log.d("subscribe()", "Handle succesful to subscribe")
+                MqttActivity.appendLog(TAG, "subscribe(), Handle successful to subscribe")
             }
         }
     }
@@ -134,6 +190,7 @@ class MqttService : Service() {
         {
             try
             {
+                MqttActivity.appendLog(TAG, "sendCommand(), send command = $command")
                 sendCommand(command.toByteArray())
             }
             catch (e:java.lang.Exception)
@@ -170,113 +227,6 @@ class MqttService : Service() {
                     //Log.d("sendCommand", "handle successful publish");
                 }
             })
-    }
-
-    private fun startCheckMqttConnectionHandler()
-    {
-        // To Do :: 무선 연결 체크
-
-        Log.d("startCheckMqttConnectionHandler()", "Check Mqtt Connection")
-
-        if ( mMqttConnectionTimeoutHandler == null)
-        {
-            mMqttConnectionTimeoutHandler = Handler()
-        }
-
-        mMqttConnectionTimeoutHandler!!.removeCallbacksAndMessages(mMqttConnectionTimeoutRun)
-        mMqttConnectionTimeoutHandler!!.postDelayed(mMqttConnectionTimeoutRun, 2000)
-
-    }
-
-    private fun startDateTimeoutHandler()
-    {
-        Log.d("startDateTimeoutHandler()", "Start DateTimeout")
-
-        if ( mDatetimeoutHandler == null )
-        {
-            mDatetimeoutHandler = Handler()
-        }
-
-        mDatetimeoutHandler!!.removeCallbacks(mDateTimeoutRunnable)
-        mDatetimeoutHandler!!.removeCallbacksAndMessages(null)
-        mDatetimeoutHandler!!.postDelayed(mDateTimeoutRunnable, mMqttTimeout)
-    }
-
-    private val mMqttConnectionTimeoutRun: Runnable = label@ Runnable {
-        val d = Log.d("mMqttConnectionTimeout", "in")
-
-        try
-        {
-            if ( getDeviceConnected() )
-            {
-                Log.d("mMqttConnectionTimeoutRun Runnable", "Disconnected PACT Wifi")
-                return@Runnable
-            }
-
-            if ( mMqttClient != null && !isConnected)
-            {
-                Log.d("mMqttConnectionTimeoutRun Runnable", "Check MQTT Connection")
-                connectClient()
-            }
-        }
-        catch (e:Exception)
-        {
-            e.printStackTrace()
-        }
-    }
-
-    private val mDateTimeoutRunnable: Runnable = Runnable {
-
-    }
-
-    public fun getDeviceConnected() : Boolean {
-        // To Do :: Wifi Check Logic 구현할 것
-        
-        return true;
-    }
-
-    // New Connect Wifi
-    fun connectToWifi(context : Context, ssid : String, password : String) : Boolean {
-        val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val networkConfig = WifiConfiguration()
-        networkConfig.SSID = "CA-00038" // param ssid
-        networkConfig.preSharedKey = "88888888" // param password
-
-        val networkId = wifiManager.addNetwork(networkConfig)
-
-        if (networkId != -1)
-        {
-            wifiManager.disconnect()
-            wifiManager.enableNetwork(networkId, true)
-            wifiManager.reconnect()
-            return true
-        }
-        return false
-    }
-
-    fun connectToMqttBroker(
-        brokerUrl: String,
-        clientId: String,
-        username: String,
-        password: String,
-        onConnectionComplete: () -> Unit,
-        onFailure: (ex: Throwable) -> Unit
-    ) {
-        val persistence = MemoryPersistence()
-        val mqttClient = MqttClient(brokerUrl, clientId, persistence)
-        val connOpts = MqttConnectOptions()
-        connOpts.userName = username
-        connOpts.password = password.toCharArray()
-
-        mqttClient.connect(connOpts, object : IMqttActionListener {
-            override fun onSuccess(asyncActionToken: IMqttToken) {
-                onConnectionComplete.invoke()
-            }
-
-            override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
-                onFailure.invoke(exception)
-            }
-        })
     }
 }
 

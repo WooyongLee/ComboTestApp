@@ -7,17 +7,20 @@
 
     <!-- Wifi 사용을 위한 permission 추가 -->
     <!-- 빨간줄 떠도 CHANGE_WIFI_STATE 권한은 필요함-->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION " />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION " />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_PROFILES " />
 
+    <!-- Using Blootooth -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
@@ -52,7 +55,6 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="landscape"
             android:exported="true">
             <!-- 본인의 App에서만 사용하게 하기 위한 exported Property true-->
             <intent-filter>
@@ -75,6 +77,16 @@
 <!--        <meta-data-->
 <!--            android:name="com.naver.maps.map.CLIENT_ID"-->
 <!--            android:value="v3p5qxpd5i" />-->
+
+        <receiver
+            android:name=".connection.connectors.WifiConnector"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

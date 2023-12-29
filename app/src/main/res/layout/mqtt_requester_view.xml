@@ -1,101 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
+    <!-- Connection Type 그룹 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_margin="3dp"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
+            android:layout_below="@+id/connectionAutoEnableGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-
-            <TextView
-                android:layout_margin="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="id = ">
-            </TextView>
-
-            <TextView
-                android:id="@+id/ssidText"
-                android:layout_margin="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CA-00038">
-            </TextView>
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-
-            <TextView
-                android:layout_margin="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="pw = ">
-            </TextView>
-
-            <TextView
-                android:id="@+id/pwText"
-                android:layout_margin="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="88888888">
-            </TextView>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/connectButton"
+            android:background="@drawable/layout_border"
             android:layout_margin="3dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connect">
-        </Button>
+            android:orientation="vertical">
+
+            <ToggleButton
+                android:id="@+id/autoConnectionToggleButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:textOn="auto connection"
+                android:textOff="manual connection"
+                android:checked="false">
+            </ToggleButton>
+        </LinearLayout>
 
         <LinearLayout
+            android:layout_below="@+id/connectionTypeGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
+            android:background="@drawable/layout_border"
+            android:layout_margin="3dp"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_margin="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Message : ">
-            </TextView>
+            <LinearLayout
+                android:id="@+id/connectionTypeTextLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/messageText"
-                android:layout_margin="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test">
-            </TextView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3dp"
+                    android:text="Connection Type">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/connectionTypeButtonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:orientation="horizontal">
+
+                <!-- Wifi 버튼 -->
+                <Button
+                    android:id="@+id/btnWifi"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="3dp"
+                    android:text="Wifi" />
+
+                <!-- Hotspot 버튼 -->
+                <Button
+                    android:id="@+id/btnHotspot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="3dp"
+                    android:text="Hotspot" />
+
+                <!-- USB Tether 버튼 -->
+                <Button
+                    android:id="@+id/btnUsbTether"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="3dp"
+                    android:text="USB Tether" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/sendButton"
-            android:layout_margin="3dp"
-            android:layout_width="wrap_content"
+        <!-- Connection Status, SSID, Icon -->
+        <LinearLayout
+            android:layout_below="@+id/connectionStatusGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send">
-        </Button>
+            android:layout_margin="3dp"
+            android:orientation="horizontal"
+            android:background="@drawable/layout_border">
 
+            <!-- Connection Status TextView -->
+            <TextView
+                android:id="@+id/tvConnectionStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:text="Connection Status" />
+
+            <!-- SSID TextBox -->
+            <EditText
+                android:id="@+id/etSSID"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:hint="SSID : "
+                android:enabled="false"
+                android:inputType="text" />
+
+            <!-- Icon Image View -->
+            <Button
+                android:id="@+id/connectionStatusImageButton"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/gray"
+                app:rippleColor="@color/gray" />
+        </LinearLayout>
+
+        <!-- TCP Port -->
+        <LinearLayout
+            android:layout_below="@+id/connectionPortGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:orientation="horizontal"
+            android:background="@drawable/layout_border">
+
+            <!-- Connection Port TextView -->
+            <TextView
+                android:id="@+id/tvConnectionPort"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:text="TCP Port" />
+
+            <!-- SSID TextBox -->
+            <EditText
+                android:id="@+id/inputPortTextEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_margin="3dp"
+                android:text="9999"
+                android:inputType="numberSigned" />
+
+            <Button
+                android:id="@+id/sendDummyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="send dummy">
+
+            </Button>
+        </LinearLayout>
+
+        <!-- MQTT Message Log TextBox -->
+        <LinearLayout
+            android:layout_below="@+id/connectionStatusGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_border"
+            android:layout_margin="3dp"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/etMQTTMessageLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:hint="Mqtt Message Log"
+                android:inputType="textMultiLine"
+                android:enabled="false" />
+        </LinearLayout>
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,7 +30,7 @@ import com.example.combobackup.roomdb.database.DataDB
 import com.example.combobackup.roomdb.database.SystemDB
 import com.example.combobackup.roomdb.entity.DataEntity
 import com.example.combobackup.roomdb.entity.SystemEntity
-import com.example.combobackup.wifi.DeviceConnector
+import com.example.combobackup.connection.DeviceConnector
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
@@ -600,7 +600,7 @@ public class MainActivity : FragmentActivity() {
     ) {
         when (requestCode) {
             REQUEST_CODE_ASK_PERMISSIONS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                DeviceConnector.wifiScan(this)
+                // DeviceConnector.wifiScan(this)
                 Log.d("wifi", "In this")
             } else {
                 // Permission Denied
@@ -612,24 +612,24 @@ public class MainActivity : FragmentActivity() {
 
 
     // Touch Event Test
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        var bReturn = false
-
-        // Prev task to draw
-        runOnUiThread {
-            Toast.makeText(
-                applicationContext,
-                "dispatchTouchEvent(), Prev Task to draw",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        bReturn = super.dispatchTouchEvent(event)
-
-        // After task to process
-
-        return bReturn
-    }
+//    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+//        var bReturn = false
+//
+//        // Prev task to draw
+//        runOnUiThread {
+//            Toast.makeText(
+//                applicationContext,
+//                "dispatchTouchEvent(), Prev Task to draw",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        }
+//
+//        bReturn = super.dispatchTouchEvent(event)
+//
+//        // After task to process
+//
+//        return bReturn
+//    }
 
 //    override fun onInterceptTouchEvent(ev : MotionEvent) : Boolean {
 //
