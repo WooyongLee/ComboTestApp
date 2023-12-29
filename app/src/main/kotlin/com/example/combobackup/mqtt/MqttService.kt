@@ -15,8 +15,6 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.function.BiConsumer
 
-import org.eclipse.paho.client.mqttv3.*
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
 class MqttService : Service() {
 
@@ -233,50 +231,6 @@ class MqttService : Service() {
         // To Do :: Wifi Check Logic 구현할 것
         
         return true;
-    }
-
-    // New Connect Wifi
-    fun connectToWifi(context : Context, ssid : String, password : String) : Boolean {
-        val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val networkConfig = WifiConfiguration()
-        networkConfig.SSID = "CA-00038" // param ssid
-        networkConfig.preSharedKey = "88888888" // param password
-
-        val networkId = wifiManager.addNetwork(networkConfig)
-
-        if (networkId != -1)
-        {
-            wifiManager.disconnect()
-            wifiManager.enableNetwork(networkId, true)
-            wifiManager.reconnect()
-            return true
-        }
-        return false
-    }
-
-    fun connectToMqttBroker(
-        brokerUrl: String,
-        clientId: String,
-        username: String,
-        password: String,
-        onConnectionComplete: () -> Unit,
-        onFailure: (ex: Throwable) -> Unit
-    ) {
-        val persistence = MemoryPersistence()
-        val mqttClient = MqttClient(brokerUrl, clientId, persistence)
-        val connOpts = MqttConnectOptions()
-        connOpts.userName = username
-        connOpts.password = password.toCharArray()
-
-        mqttClient.connect(connOpts, object : IMqttActionListener {
-            override fun onSuccess(asyncActionToken: IMqttToken) {
-                onConnectionComplete.invoke()
-            }
-
-            override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
-                onFailure.invoke(exception)
-            }
-        })
     }
 }
 

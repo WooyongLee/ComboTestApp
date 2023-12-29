@@ -34,9 +34,6 @@ class HalfViewFragment : Fragment() {
                     val params = guideLine.getLayoutParams() as ConstraintLayout.LayoutParams
                     params.guidePercent = event.getRawX() / width
 
-
-                    Log.d("MotionEvent.ACTION_MOVE", "width = " + width + ", guidePercent = " + params.guidePercent)
-                    Log.d("MotionEvent.ACTION_MOVE", "width = " + width + ", guidePercent = " + params.guidePercent)
                     guideLine.setLayoutParams(params)
                 }
                 else -> false

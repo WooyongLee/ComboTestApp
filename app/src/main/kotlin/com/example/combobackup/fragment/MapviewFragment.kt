@@ -18,8 +18,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.combobackup.R
 import com.example.combobackup.databinding.MapViewFragmentBinding
+import com.example.combobackup.map.MapDrawer
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.model.*
+import kotlin.random.Random
 
 
 class MapviewFragment : Fragment(), OnMapReadyCallback,
@@ -43,6 +46,8 @@ class MapviewFragment : Fragment(), OnMapReadyCallback,
     lateinit var locationManager: LocationManager
     lateinit var currentContext: Context
 
+    lateinit var buttonRemove : Button
+    lateinit var buttonObject : Button
     lateinit var buttonLeft : Button
     lateinit var buttonRight : Button
 
@@ -50,7 +55,11 @@ class MapviewFragment : Fragment(), OnMapReadyCallback,
     var polylineOptions = PolylineOptions()
     lateinit var mPolyline: Polyline
 
+    lateinit var mapDrawer : MapDrawer
+
     private val binding get() = _binding!!
+
+    var angle = 0.0
 
     var gpsLocationListener = LocationListener {
         var latLng = LatLng(it.latitude, it.longitude)
@@ -104,6 +113,8 @@ class MapviewFragment : Fragment(), OnMapReadyCallback,
 
         buttonLeft = thisView!!.findViewById(R.id.ChaseButton)
         buttonRight = thisView!!.findViewById(R.id.ClearButton)
+        buttonObject = thisView!!.findViewById(R.id.AddObjectButton)
+        buttonRemove = thisView!!.findViewById(R.id.RemoveObjectButton)
 
         _binding = MapViewFragmentBinding.inflate(inflater, container, false)
 
@@ -206,6 +217,41 @@ class MapviewFragment : Fragment(), OnMapReadyCallback,
         })
         // endregion
 
+        buttonObject.text = "객체 추가"
+        buttonObject.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                    val latOffset = 0.005
+                    val lonOffset = 0.008
+                    val randomLatOffset = Random.nextDouble(-latOffset, latOffset) // from ~ until
+                    val randomLonOffset = Random.nextDouble(-lonOffset, lonOffset)
+                    val companyPos = LatLng(37.342189 + randomLatOffset, 127.108483 + randomLonOffset)
+
+                    // To Do :: Power에 따른 hue 설정 추가
+                    // hue : 250~275, 315~340
+                    val random1 = Random.nextFloat() * (275f - 250f) + 250f
+                    val random2 = Random.nextFloat() * (340f - 315f) + 315f
+                    val hue = if (Random.nextFloat() > 0.5f) random1 else random2
+
+                    // get -120~-20 random power
+                    // val randomPower = (-120..-20).random().toDouble() + Math.random()
+
+                    _binding!!.AngleText.setText("0")
+                    var strAngle = _binding!!.AngleText.text.toString()
+                    angle += 30.0
+                    mapDrawer = MapDrawer(0, companyPos, hue, angle, mGoogleMap)
+            }
+        })
+
+        buttonRemove.text = "객체 제거"
+        buttonRemove.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                if ( mapDrawer != null )
+                {
+                    mapDrawer.removeMarker()
+                }
+            }
+        })
+
         return thisView
     }
 
@@ -285,6 +331,21 @@ class MapviewFragment : Fragment(), OnMapReadyCallback,
         mGoogleMap.setOnMapLongClickListener(this)
         mGoogleMap.setOnCameraMoveListener(this)
         mGoogleMap.setOnCameraMoveStartedListener(this)
+
+        mGoogleMap.setOnMarkerClickListener(OnMarkerClickListener { // 마커 클릭 이벤트 처리
+            Log.d("Map", "Marker clicked: " + it.getTitle());
+
+            false
+        })
+
+        mGoogleMap.setOnPolygonClickListener {
+            Log.d("PolygonTouched" ,"polygon tag = " + it.tag.toString() + ", id = " + it.id)
+        }
+
+        mGoogleMap.setOnCircleClickListener {
+            Log.d("CircleTouched" ,"circle tag = " + it.tag.toString() + ", id = " + it.id)
+        }
+
     }
 
     override fun onMapClick(p0: LatLng) {

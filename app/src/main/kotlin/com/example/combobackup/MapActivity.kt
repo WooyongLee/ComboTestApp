@@ -3,8 +3,13 @@ package com.example.combobackup
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -21,7 +26,7 @@ import com.example.combobackup.fragment.MapviewFragment
 import com.example.combobackup.fragment.TableViewFragment
 
 //region GoogleMap 이용할 때
-class MapActivity : FragmentActivity(),
+class MapActivity : FragmentActivity(), SensorEventListener,
 
     ActivityCompat.OnRequestPermissionsResultCallback  {
 
@@ -29,6 +34,9 @@ class MapActivity : FragmentActivity(),
 
     lateinit var binding: com.example.combobackup.databinding.MapViewBinding
     lateinit var locationManager: LocationManager
+
+    lateinit var sensorManager : SensorManager
+    lateinit var accelerometer: Sensor
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +52,9 @@ class MapActivity : FragmentActivity(),
         val isNetworkEnable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         Log.d("Check Provider", "Gps Enable " + isGpsEnable + ", Network Enable " + isNetworkEnable)
         // endregion
+
+        sensorManager = this.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
         // GPS 설정 비활성화 시 활성화 하도록 가이드
         if (!isGpsEnable) {
@@ -136,6 +147,18 @@ class MapActivity : FragmentActivity(),
             }
         })
         // endregion
+
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 
     fun toggleFabClose(op : Boolean)
@@ -186,6 +209,25 @@ class MapActivity : FragmentActivity(),
 
 
     }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        // Log.d("Sensor Event", "type = " + event?.sensor?.type + ", value 0 =" + event?.values!![0].toString())
+
+        if (event?.sensor?.type == Sensor.TYPE_ROTATION_VECTOR) {
+            val rotationMatrix = FloatArray(9)
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+            val orientation = FloatArray(3)
+            SensorManager.getOrientation(rotationMatrix, orientation)
+            val azimuthInRadians = orientation[0]
+            val azimuthInDegrees = Math.toDegrees(azimuthInRadians.toDouble()).toFloat()
+            val mapBearing = (azimuthInDegrees + 360) % 360
+
+            Log.d("onSensorChanged()",
+                "azimuthInRadians:$azimuthInRadians;azimuthInDegrees:$azimuthInDegrees;mapBearing:$mapBearing")
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {    }
 }
 //endregion
 

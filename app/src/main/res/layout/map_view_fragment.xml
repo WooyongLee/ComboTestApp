@@ -36,7 +36,42 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"></Button>
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/AngleText"
+                android:layout_width="100px"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+            </EditText>
+
+            <Button
+                android:id="@+id/AddObjectButton"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1.5">
+            </Button>
+
+            <Button
+                android:id="@+id/RemoveObjectButton"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1.5">
+            </Button>
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5">
+
+            </TextView>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
